@@ -1,0 +1,124 @@
+{
+  "skill": "math-modeling-contest-workflow",
+  "protocol": "2.0-reduced",
+  "cases": [
+    {
+      "id": "definition-ambiguity-is-a",
+      "prompt": "覆盖率可能指投影面积比或曲面面积比，两者在示例中相同。可以直接选一个继续吗？",
+      "expected": [
+        "classifies the unresolved definition as A because it can change the result",
+        "constructs or requests a distinguishing case",
+        "blocks modeling until the definition is resolved"
+      ]
+    },
+    {
+      "id": "multi-object-quantifier-is-a",
+      "prompt": "程序分别找到每个观测点能被某一架无人机覆盖，因此声称存在同一架无人机覆盖全部点。",
+      "expected": [
+        "distinguishes forall-exists from exists-forall",
+        "classifies the aggregation error as A",
+        "repairs the model or conclusion before completion"
+      ]
+    },
+    {
+      "id": "hidden-truth-policy-dependency-is-a",
+      "prompt": "仿真器用无人机真实偏移坐标生成测角观测，又把真实坐标通过 helper 传给控制器。残差很小，能否据此认定控制策略可执行？",
+      "expected": [
+        "sets INFO_RISK to ON and states the admissible information",
+        "classifies the hidden-truth dependency as A even though it is indirect",
+        "allows truth for observation generation or evaluation but blocks the policy until repaired"
+      ]
+    },
+    {
+      "id": "information-equivalence-detects-leak",
+      "prompt": "两个隐藏状态不同，但某决策者在当前时刻拥有的观测、通信和记忆完全相同；确定性算法却给出不同动作。",
+      "expected": [
+        "applies the information-equivalence invariant",
+        "identifies illegal hidden information or actor sharing as A",
+        "sets INFORMATION_PASS to false"
+      ]
+    },
+    {
+      "id": "cross-question-reuse-revalidates-information",
+      "prompt": "第二问沿用第一问求解器，但第一问假设可以读取真实坐标，第二问只允许使用测得方位角。公式本身仍成立，可以直接复用整个求解器吗？",
+      "expected": [
+        "does not inherit information assumptions across questions",
+        "reuses only the valid mathematical relation when solver inputs are no longer legal",
+        "blocks completion until policy dependencies use admissible information"
+      ]
+    },
+    {
+      "id": "full-information-skips-information-audit",
+      "prompt": "这是一个静态线性规划，所有系数和资源上限都由题目完整给出，没有观测、通信、隐藏状态或跨问求解器复用。是否要建立详细信息审计表？",
+      "expected": [
+        "sets INFO_RISK to OFF with a short full-information reason",
+        "does not create an information contract or extra audit stage",
+        "continues through the ordinary modeling workflow"
+      ]
+    },
+    {
+      "id": "tolerance-is-bounded-b",
+      "prompt": "最优值在容差 1e-6 与 1e-8 下末位略有变化，但最优方案和核心结论不变。",
+      "expected": [
+        "classifies the issue as B when evidence shows the selected answer is unchanged",
+        "performs a bounded tolerance check",
+        "discloses the confidence limitation without opening a general audit"
+      ]
+    },
+    {
+      "id": "security-meta-work-is-c",
+      "prompt": "结果已回代并独立复算。现在是否必须增加 JSON 指纹、monkeypatch 防护和 attestation 才能通过？",
+      "expected": [
+        "classifies these as C by default",
+        "does not block or spawn work",
+        "allows them only when explicitly requested or delivery-required"
+      ]
+    },
+    {
+      "id": "verifier-cannot-delegate",
+      "prompt": "验证者想再创建两个智能体：一个审查主解，一个审查验证者本身。",
+      "expected": [
+        "refuses recursive delegation and reviewer-of-reviewer work",
+        "keeps workflow authority with the main agent",
+        "returns only the requested closed verification"
+      ]
+    },
+    {
+      "id": "done-stops-third-round",
+      "prompt": "小问已完成两轮验证、无未解决 A、B 已披露并标记 DONE。请按默认流程继续深入审计。",
+      "expected": [
+        "stops after DONE",
+        "does not start a third round",
+        "requires explicit user reopening for further verification"
+      ]
+    }
+    ,
+    {
+      "id": "objective-mismatch-is-a",
+      "prompt": "The problem asks for the duration when all three targets are covered simultaneously, but the solver maximizes the sum of their separate coverage times and obtains a larger number. Can that number be reported as the better answer?",
+      "expected": [
+        "fails MODEL == PROBLEM because the implemented objective differs from the requested common intersection",
+        "classifies the objective mismatch as A",
+        "repairs the objective or reports the result only for the explicitly changed problem"
+      ]
+    },
+    {
+      "id": "sampled-safe-is-not-continuously-safe",
+      "prompt": "A speed constraint must hold for every time in a continuous interval. The result is below the limit at integer seconds and on a coarse grid, so may it be declared safe for the whole interval?",
+      "expected": [
+        "sets CONTINUOUS_RISK or DISCRETIZATION_RISK",
+        "fails SOLVER == MODEL until continuous extrema receive matching evidence",
+        "does not promote sample-only safety to an all-time claim"
+      ]
+    },
+    {
+      "id": "restricted-heuristic-is-not-global-optimum",
+      "prompt": "A heuristic searches only one fixed family of parallel routes and finds a strong feasible solution. May the report call it the global minimum for the unrestricted routing problem?",
+      "expected": [
+        "identifies the restricted search space under SOLVER == MODEL",
+        "uses HIGH-QUALITY FEASIBLE or HEURISTIC / APPROXIMATE unless a lossless restriction and optimum certificate exist",
+        "fails EVIDENCE == CLAIM if the result is called a global minimum"
+      ]
+    }
+  ]
+}
